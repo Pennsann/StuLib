@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Library</title>
+  <title>Student Search - Admin</title>
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f9; }
     header { background: #2c3e50; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -23,17 +23,14 @@
     th, td { padding: 10px; text-align: left; }
     th { background: #2c3e50; color: #fff; }
     .btn { padding: 6px 12px; margin: 0 3px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
-    .btn-add { background: #27ae60; color: #fff; }
-    .btn-edit { background: #2980b9; color: #fff; }
-    .btn-delete { background: #c0392b; color: #fff; }
-    .filter-form { margin-bottom: 15px; }
-    .filter-form select { padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; }
-    .filter-form button { padding: 5px 10px; border-radius: 4px; border: none; background: #2980b9; color: #fff; cursor: pointer; }
+    .btn-search { background: #2980b9; color: #fff; }
+    .search-form { margin-bottom: 15px; }
+    .search-form input { padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; }
   </style>
 </head>
 <body>
   <header>
-    <h1>Admin Dashboard</h1>
+    <h1>Student Search - Admin</h1>
     <form action="{{ route('logout') }}" method="POST" style="margin:0;">
       @csrf
       <button type="submit" class="logout-btn">Logout</button>
@@ -45,58 +42,73 @@
       <h3>Navigation</h3>
       <ul>
         <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ route('admin.users.index') }}">Users</a></li>
         <li><a href="{{ route('profile.edit') }}">Profile</a></li>
       </ul>
     </nav>
 
     <main>
       <div class="card">
-        <h2>Books Management</h2>
-        <a href="{{ route('admin.books.create') }}" class="btn btn-add">+ Add New Book</a>
-
-        <!-- Filter Form -->
-        <form method="GET" action="{{ route('admin.dashboard') }}" class="filter-form">
-          <label for="status">Filter:</label>
-          <select name="status" id="status" onchange="this.form.submit()">
-            <option value="all" {{ request('status')=='all' ? 'selected' : '' }}>All</option>
-            <option value="available" {{ request('status')=='available' ? 'selected' : '' }}>Available</option>
-            <option value="unavailable" {{ request('status')=='unavailable' ? 'selected' : '' }}>Borrowed</option>
-          </select>
+        <h2>Search Student by ID</h2>
+        <form method="POST" action="{{ route('admin.users.search') }}" class="search-form">
+          @csrf
+          <input type="number" name="student_id" placeholder="Enter student ID" required>
+          <button type="submit" class="btn btn-search">Search</button>
         </form>
+      </div>
 
+      <div class="card">
+        <h2>All Students</h2>
         <table>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Title</th>
-              <th>Author</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($books as $book)
+            @php
+              $allStudents = \App\Models\User::where('role', 'student')->get();
+            @endphp
+            @foreach($allStudents as $student)
             <tr>
-              <td>{{ $book->id }}</td>
-              <td>{{ $book->title }}</td>
-              <td>{{ $book->author }}</td>
-              <td>{{ $book->category }}</td>
-              <td>{{ $book->status }}</td>
-              <td>
-                <a href="{{ route('admin.books.edit', $book->id) }}" class="btn btn-edit">Edit</a>
-                <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" style="display:inline;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-delete">Delete</button>
-                </form>
-              </td>
+              <td>{{ $student->id }}</td>
+              <td>{{ $student->name }}</td>
+              <td>{{ $student->email }}</td>
+              <td>{{ $student->role }}</td>
             </tr>
             @endforeach
           </tbody>
         </table>
       </div>
+
+      @if(isset($students) && $students && count($students) > 0)
+      <div class="card">
+        <h2>Search Results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($students as $student)
+            <tr>
+              <td>{{ $student->id }}</td>
+              <td>{{ $student->name }}</td>
+              <td>{{ $student->email }}</td>
+              <td>{{ $student->role }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+      @endif
+
     </main>
   </div>
 </body>
