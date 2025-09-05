@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Library</title>
+  <title>Student Dashboard - Library</title>
   <style>
     body {
       margin: 0;
@@ -111,17 +111,12 @@
       font-size: 14px;
     }
 
-    .btn-add {
+    .btn-borrow {
       background: #27ae60;
       color: #fff;
     }
 
-    .btn-edit {
-      background: #2980b9;
-      color: #fff;
-    }
-
-    .btn-delete {
+    .btn-return {
       background: #c0392b;
       color: #fff;
     }
@@ -129,8 +124,8 @@
 </head>
 <body>
   <header>
-    <h1>Admin Dashboard</h1>
-    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+    <h1>Student Dashboard</h1>
+    <form action="/logout" method="POST" style="margin:0;">
       @csrf
       <button type="submit" class="logout-btn">Logout</button>
     </form>
@@ -140,19 +135,48 @@
     <nav>
       <h3>Navigation</h3>
       <ul>
-        <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ route('admin.books.index') }}">Books</a></li>
-        --<li><a href="{{ route('admin.users.index') }}">Users</a></li>
-        <li><a href="{{ route('admin.borrowed.index') }}">Borrowed</a></li>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">My Borrowed Books</a></li>
+        <li><a href="#">Browse Books</a></li>
+        <li><a href="#">Profile</a></li>
         <li><a href="#">Settings</a></li>
       </ul>
     </nav>
 
     <main>
       <div class="card">
-        <h2>Books Management</h2>
-        <a href="{{ route('admin.books.create') }}" class="btn btn-add">+ Add New Book</a>
+        <h2>My Borrowed Books</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Borrow Date</th>
+              <th>Return Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>101</td>
+              <td>The Great Gatsby</td>
+              <td>2025-08-01</td>
+              <td>2025-08-15</td>
+              <td><button class="btn btn-return">Return</button></td>
+            </tr>
+            <tr>
+              <td>102</td>
+              <td>Clean Code</td>
+              <td>2025-08-05</td>
+              <td>2025-08-19</td>
+              <td><button class="btn btn-return">Return</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
+      <div class="card">
+        <h2>Available Books</h2>
         <table>
           <thead>
             <tr>
@@ -161,27 +185,26 @@
               <th>Author</th>
               <th>Category</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($books as $book)
             <tr>
-              <td>{{ $book->id }}</td>
-              <td>{{ $book->title }}</td>
-              <td>{{ $book->author }}</td>
-              <td>{{ $book->category }}</td>
-              <td>{{ $book->status }}</td>
-              <td>
-                <a href="{{ route('admin.books.edit', $book->id) }}" class="btn btn-edit">Edit</a>
-                <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" style="display:inline;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-delete">Delete</button>
-                </form>
-              </td>
+              <td>201</td>
+              <td>1984</td>
+              <td>George Orwell</td>
+              <td>Dystopian</td>
+              <td>Available</td>
+              <td><button class="btn btn-borrow">Borrow</button></td>
             </tr>
-            @endforeach
+            <tr>
+              <td>202</td>
+              <td>Design Patterns</td>
+              <td>Erich Gamma</td>
+              <td>Programming</td>
+              <td>Available</td>
+              <td><button class="btn btn-borrow">Borrow</button></td>
+            </tr>
           </tbody>
         </table>
       </div>
